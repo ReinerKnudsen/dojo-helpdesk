@@ -1,9 +1,32 @@
+//export const dynamicParams = false;
+// Handle the case where no pre-rendered page exists for a requested ID
+// Provides a 404 page
+
+import { notFound } from 'next/navigation';
+
+export const dynamicParams = true;
+// In this case NextJS tries to render a page for the requested ID if that does not exist yet
+
+export async function generateStaticParams() {
+  const res = await fetch('http://localhost:4000/tickets');
+  const tickets = await res.json();
+  return tickets.map((ticket) => ({
+    id: ticket.id,
+  }));
+}
+
 async function getTicket(id) {
   const res = await fetch('http://localhost:4000/tickets/' + id, {
     next: {
       revalidate: 60,
     },
   });
+
+  if (!res.ok) {
+    // displays a 404 page
+    notFound();
+  }
+
   return res.json();
 }
 
