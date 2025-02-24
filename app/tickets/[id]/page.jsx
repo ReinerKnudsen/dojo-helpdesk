@@ -16,6 +16,7 @@ export async function generateStaticParams() {
 }
 
 async function getTicket(id) {
+  await new Promise((res) => setTimeout(res, 3000)); // imitade delay
   const res = await fetch('http://localhost:4000/tickets/' + id, {
     next: {
       revalidate: 60,
